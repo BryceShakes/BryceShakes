@@ -1,0 +1,296 @@
+---
+title: "Problems Sheet 01 / Monte Carlo methods"
+author: "Bryce Shakespeare"
+output:
+  pdf_document:
+    keep_tex: yes
+  html_notebook: default
+  html_document: default
+  word_document: default
+---
+
+
+# Problem 1 part 1 a
+
+```{r}
+
+packages <- c('tidyverse','knitr')
+lapply(packages, require, character.only = TRUE)
+
+
+# Problem 1.1 ---------------------------------------------------------------
+
+set.seed(15036)
+# make sure my results dont change, im sure with so many samples it will not
+
+x0 <- 2341
+a <- 2^18 + 1
+b <- 1
+m <- 2^35
+n <- 10^7
+# initialise constants
+
+xi <- x0
+# initialise xi array
+
+for (i in 1:n){
+  xi[i+1] <- (a*xi[i] +b)%%m}
+# loop to generate n xi
+
+# 1.1.a)
+ui <- xi[-1]/m
+# remove x0 and produce ui from remaining xi
+
+```
+
+
+# Problem 1 part 1 B
+
+
+```{r}
+
+# 1.1.b)
+ui_plot <- hist(ui)
+
+```
+
+### The Ui array appears from the histogram to be distributed U[0,1]
+### An equal number of 'random' elements fall into each bin of the histogram evenly
+
+# Problem 1 part 1 c
+
+
+```{r}
+
+
+# 1.1.c)
+acf <- acf(ui, lag.max = 100, plot = TRUE)
+head(acf)
+
+real_uni <- runif(n)
+# generate random informs to compare to using ks.test
+
+```
+
+### all lags >0 have a value within 0.001 of 0. 
+### conclude there is no correlation within any two ui (within a 100 lag) as no strong acf score
+
+
+# Problem 1 part 1 d
+
+
+```{r}
+
+# 1,1.d)
+uniform_test <- ks.test(ui, 'punif')
+uniform_test
+
+```
+
+
+### p-value is 1, do not reject H0=> no evidence that the ui generated has different distribution than random uniform U[0,1]
+
+# Problem 1 part 2 a
+
+
+
+```{r}
+
+
+n2 <- 10^6
+ui_sample <- ui[1:(n2/2)]
+ui_sample_2 <- ui[((n2/2)+1):n2]
+
+
+#generate N~(0,1) first
+
+ni_01 <- NULL
+for (i in 1:length(ui_sample)){
+  ni_01[2*i -1] <- sqrt(-2*log(ui_sample[i])) * cos(2*pi*ui_sample_2[i])
+  ni_01[2*i] <- sqrt(-2*log(ui_sample[i])) * sin(2*pi*ui_sample_2[i])
+}
+
+# 1.2.a)
+ni_14 <- (ni_01*2) + 1
+# *2 to achieve var = 4 
+
+hist(ni_01)
+# checking the initial dist looks right
+
+hist(ni_14, probability = TRUE)
+curve(dnorm(x,mean = 1, sd = 2), -100, 100, add = TRUE, col='red')
+
+```
+
+### appears to fit the correct parameters, histogram of data matches the curve of the actual distribution
+
+# Problem 1 part 2 b
+
+
+
+```{r}
+
+# 1.2.b)
+norm_test <- ks.test(ni_14, 'pnorm', mean = 1, sd = 2)
+norm_test
+
+```
+
+### p = 0.9661 => dont reject null, no evidence generated distribution is different to N~(1,4)
+
+# Problem 1 part 2 c
+
+
+
+```{r}
+
+#1.2.c)
+n3 <- 10^4
+ui_sample_3 <- ui[(n2+1):(n2+(n3/2))]
+ui_sample_4 <- ui[(n2+1+(n3/2)):(n2+n3)]
+
+
+#generate N~(0,1) first again
+
+ni_01_02 <- NULL
+for (i in 1:length(ui_sample_3)){
+  ni_01_02[2*i -1] <- sqrt(-2*log(ui_sample_3[i])) * cos(2*pi*ui_sample_4[i])
+  ni_01_02[2*i] <- sqrt(-2*log(ui_sample_3[i])) * sin(2*pi*ui_sample_4[i])
+}
+
+
+ni_14_02 <- (ni_01_02*2) + 1
+# *2 to achieve var = 4 
+
+hist(ni_14_02, probability = TRUE)
+curve(dnorm(x,mean = 1, sd = 2), -100, 100, add = TRUE, col='red')
+
+
+```
+
+### appears to fit the correct parameters again, curve matches histogram (as seen in part 1.2.a), so smaller sample appears equally distributed
+
+# Problem 1 part 2 d
+
+
+```{r}
+
+# 1.2.d)
+####  with r generated
+
+r_n14_n2 <- rnorm(n2,1,2)
+# n^6 samples of mean 1, sd 2
+
+
+hist(r_n14_n2, probability = TRUE)
+curve(dnorm(x,mean = 1, sd = 2), -100, 100, add = TRUE, col='red')
+# matches as before
+
+ks.test(r_n14_n2, 'pnorm', mean = 1, sd = 2)
+
+r_n14_n3 <- rnorm(n3,1,2)
+# n^4 samples of mean 1, sd 2
+
+
+hist(r_n14_n3, probability = TRUE)
+curve(dnorm(x,mean = 1, sd = 2), -100, 100, add = TRUE, col='red')
+# matches as before
+
+ks.test(r_n14_n3, 'pnorm', mean = 1, sd = 2)
+# p-value = 0.9645 so do not reject H0, seems the r generated data is dist Normal with mean 1, sd 2
+
+```
+
+
+### p-value = 0.2516 so do not reject H0, seems the r generated data is distributed as a Normal with mean 1, sd 2 for n =10^6, the histogram of this many sample generated from R is similar to when we generated our own also.
+### The same can be said for when n = 1-^4, infact p = 0.9645, again the histogram matches the curve of the actual N~(1,4) distribution.
+
+
+# Problem 1 part 3
+
+
+### the prng used here seems just as valuable as the default prng. the U[0,1] sample itself is satisfactorily uniformly distributed, as seen in 1.1.)
+
+### This then produces other distribtions that appear to be very similar to both the real distribution and when generated using R's default prng as seen in 1.2.)
+
+
+
+# Problem 2 part 1
+
+```{r}
+
+#2.2.1)
+
+rm(list=ls())
+set.seed(15037)
+# clean enviroment for ease, lots of old variables. Reset seed aswell for consistency
+
+N <- 10^4
+df <- data.frame(
+  x = runif(N, -1,1),
+  y = runif(N, -1,1)) %>% mutate(
+    radius = x^2 + y^2,
+    circle_bool = ifelse(radius <= 1, 1, 0))
+# creating df with 4 columns:
+# x and y, each 10^4 random uniform U[-1,1] to be treated as our cartesian coords
+# column of radius of the two points from origin
+# circle_bool = 1 or 0 depending on if the radius of the two points is less than or equal to 0
+
+pi_est <- NULL
+for (i in 1:N){
+  pi_est[i] <- (sum(df$circle_bool[1:i])/i)*4
+}
+# applying the test for n = 1..1000, using the circle_bool from before as indicator of inside circle or not
+
+```
+
+
+# Problem 2 part 2
+
+```{r}
+
+#2.2.2)
+
+ggplot(data.frame(n = 1:N, pi_est),aes(x = n , y = pi_est)) +
+  geom_line() + geom_hline(yintercept =  pi, colour = 'blue', linetype = 'dashed') +
+  scale_y_continuous(breaks = seq(2.5,4, 0.15)) +
+  ylab('Pi Estimate') + ggtitle('Pi estimate by n raindrops')
+
+```
+
+### as n increases the estimate for pi approaches the line for the actual pi value
+### up until about n = 6.5K where the estimate appears to remain a small consistent amount under the actual value
+### presumably this is by chance and if N were increase more so, the estimate would continously tend closer to the real value
+
+# Problem 2 part 3
+
+```{r}
+
+#2.2.3)
+
+k <- 1000
+Zn_get <- function (Num = N){
+  temp_df <-  data.frame(
+    x = runif(Num, -1,1),
+    y = runif(Num, -1,1)) %>% mutate(
+      circle_bool = ifelse(x^2 + y^2 <= 1, 1, 0))
+  pi_n <- 4*(sum(temp_df$circle_bool)/Num)
+  sig <- sqrt(4*pi*(1-(pi/4)))
+  Zn <- (sqrt(Num)*(pi_n - pi))/sig
+  return(Zn)
+  }
+# define function to return Zn, will iterate this k times
+
+
+Zn_i <- as.numeric(replicate(k, Zn_get(), simplify=FALSE))
+# do zn_get k times and save 
+
+
+hist(Zn_i, probability = TRUE)
+curve(dnorm(x,mean = 0, sd = 1), -100, 100, add = TRUE, col='red')
+
+```
+
+
+### the distribution of zn_i appears to roughly fit the standard normal distribution
+### the distribution Pi_N samples therefore showcases CLT, and thus our estimators mean tends to Pi as our samples of Pi_N increase and also as N itself increases
