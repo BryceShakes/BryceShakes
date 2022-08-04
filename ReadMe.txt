@@ -9,6 +9,10 @@ In order of interest:
 	Generate Matrix Corr plot thing.R
 		Expansion on Tic tac Three. Using R to generate some nice plots from the output of above.
 
+	distance matrix generation functions fast.g
+		(only runs in linux)
+		Gap file containing functions used to generate distance matrices for spheres of small cancellation groups
+
 	prime factorisation.py + fizz buzz.py
 		Standard coding problems and my approach to solving them
 
