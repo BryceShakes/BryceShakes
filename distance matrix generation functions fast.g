@@ -34,7 +34,7 @@ get_reduced_words_2:= function(f,n,l)
         od;
     fi;
     Unbind(words);
-    return points;
+    return points;;
 end;
 
 # way faster, bit hackier
@@ -56,7 +56,7 @@ get_reduced_words := function(g, n, l)
 			break;
 		fi;
 	od;
-	return DuplicateFreeList(words);
+	return DuplicateFreeList(words);;
 end;
 
 # super hacky, super weird, kinda fast
@@ -70,7 +70,7 @@ get_free_words := function(f, n, l)
     od;
     words:=DuplicateFreeList(words);;
     words:=List([1..Minimum(Length(words),n)], i->words[i]);;
-    return words;
+    return words;;
 end;;
 
 
@@ -93,7 +93,7 @@ bryce_func := function(g, n, l)
             break;
         fi;
     od;
-    return red_words;
+    return red_words;;
 end;;
 
 
@@ -107,7 +107,7 @@ word_metric := function(g, w1, w2)
     else
         kb_g:=KBMAGRewritingSystem(g);;
         KnuthBendix(kb_g);;
-        return Length(ReducedForm(kb_g, w1^-1*w2));
+        return Length(ReducedForm(kb_g, w1^-1*w2));;
     fi;
 end;;
 
@@ -122,7 +122,7 @@ gromov_distance := function(g, w1, w2, w3...)
         id := w3[1];
     fi;
     if w1 = w2 then
-        return 1.0/0.0;
+        return 1.0/0.0;;
     else
         if IsKBMAGRewritingSystemRep(g) then
             return (word_metric(g, id, w1) + word_metric(g, id, w2) - word_metric(g, w1, w2))*0.5;;
@@ -135,7 +135,7 @@ gromov_distance := function(g, w1, w2, w3...)
 end;
 
 visual_metric := function(grom, eps)
-    return Exp(Float(-eps*grom));
+    return Exp(Float(-eps*grom));;
 end;;
 
 
@@ -165,11 +165,65 @@ dist_mat := function(g, words, eps)
             Add(matrix, row);
         od;
     fi;
-    return matrix;
+    return matrix;;
+end;
+
+dist_mat_gromo := function(g, words)
+    local matrix, i, j, row, gromo, kb_g;
+    matrix := [];
+    if IsKBMAGRewritingSystemRep(g) then
+        for i in words do
+            row :=[];
+            for j in words do
+                gromo := gromov_distance(g, i, j);
+                Add(row, gromo);
+            od;
+            Add(matrix, row);
+        od;
+    else
+        kb_g:=KBMAGRewritingSystem(g);;
+        KnuthBendix(kb_g);;
+        for i in words do
+            row :=[];
+            for j in words do
+                gromo := gromov_distance(kb_g, i, j);
+                Add(row, gromo);
+            od;
+            Add(matrix, row);
+        od;
+    fi;
+    return matrix;;
+end;
+
+dist_mat_words := function(g, words)
+    local matrix, i, j, row, w_met, kb_g;
+    matrix := [];
+    if IsKBMAGRewritingSystemRep(g) then
+        for i in words do
+            row :=[];
+            for j in words do
+                w_met := word_metric(g, i, j);
+                Add(row, w_met);
+            od;
+            Add(matrix, row);
+        od;
+    else
+        kb_g:=KBMAGRewritingSystem(g);;
+        KnuthBendix(kb_g);;
+        for i in words do
+            row :=[];
+            for j in words do
+                w_met := word_metric(g, i, j);
+                Add(row, w_met);
+            od;
+            Add(matrix, row);
+        od;
+    fi;
+    return matrix;;
 end;
 
 MatToRec := function(mat);
-	return(rec(1 := mat));
+	return(rec(1 := mat));;
 end;;
 
 MatToRec_not_the_best := function(mat)
@@ -178,7 +232,7 @@ MatToRec_not_the_best := function(mat)
 	for i in mat do
 	\.\:\=( r, RNamObj(Position( mat, i)), i );
 	od;
-	return r;
+	return r;;
 end;;
 
 
@@ -201,16 +255,16 @@ big_func := function(g, n, l, eps)
 		fi;
 	od;
 	words:=DuplicateFreeList(words);
-    return dist_mat(kb_g, words, eps);
+    return dist_mat(kb_g, words, eps);;
 end;;
 
 big_func_rec := function(g, n, l, eps)
-	return MatToRec(big_func(g, n, l, eps));
+	return MatToRec(big_func(g, n, l, eps));;
 end;;
 
 #make sure path passed is a working :=Filename()
 print_mat := function(mat, path)
-	PrintCSV(path, MatToRec(mat));;
+	PrintCSV(path, [MatToRec(mat)]);;
 end;;
 
 #f:=FreeGroup("a","b");
@@ -221,13 +275,12 @@ end;;
 #PrintCSV(name, [rec_mat]);
 
 
-
+# surface group, not very good
 
 f := FreeGroup("a1","b1","a2","b2");
 AssignGeneratorVariables(f);
 g := f/[Comm(a1,b1)*Comm(a2,b2)];
 kb_g := KBMAGRewritingSystem(g);
-
 # this step is rediculously slow for this group, idk why, took ages to come up with the rules
 KnuthBendix(kb_g);
 

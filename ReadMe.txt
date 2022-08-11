@@ -1,5 +1,5 @@
 
-Files containing small projects outside of work. Does not contain many uni files either due to potential plagiarism issues.
+Files containing small projects outside of work. Does not contain many uni files either due to potential plagiarism or licensing issues.
 
 In order of interest:
 
@@ -7,11 +7,14 @@ In order of interest:
 		Building a tic tac toe variety and teaching an agent how to play with value iteration
 
 	Generate Matrix Corr plot thing.R
-		Expansion on Tic tac Three. Using R to generate some nice plots from the output of above.
+		Expansion on Tic tac Three. Using R to generate some nice plots from the output of above
 
 	distance matrix generation functions fast.g
 		(only runs in linux)
-		Gap file containing functions used to generate distance matrices for spheres of small cancellation groups
+		GAP file containing functions used to generate dissimilarity matrices for spheres of small cancellation groups
+
+	MDS and CSV functions.py
+		takes output csv from above .g file, converts to readable form and uses MDS to plot in euclidian space
 
 	prime factorisation.py + fizz buzz.py
 		Standard coding problems and my approach to solving them
