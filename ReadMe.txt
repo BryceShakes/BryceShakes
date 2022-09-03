@@ -9,9 +9,10 @@ In order of interest:
 	Generate Matrix Corr plot thing.R
 		Expansion on Tic tac Three. Using R to generate some nice plots from the output of above
 
-	distance matrix generation functions fast.g
+	distance matrix generation functions fast.g (Tutorial and testing.g)
 		(only runs in linux)
 		GAP file containing functions used to generate dissimilarity matrices for spheres of small cancellation groups
+		Tutorial and testing.g gives example and generates some tables on runtime
 
 	MDS and CSV functions.py
 		takes output csv from above .g file, converts to readable form and uses MDS to plot in euclidian space
