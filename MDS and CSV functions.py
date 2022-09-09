@@ -49,11 +49,17 @@ def bryce_draw_from_raw(path, metric = False):
     arr = csv_to_mat(path)
     Bryce_picture(arr, metric=metric)
     
+# %% genus 2 surface
+
+path = r"C:/Users/Bryce/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc/LocalState/rootfs/home/bryce/gap-4.11.1/genus_2_vis.csv"
+
+bryce_draw_from_raw(path, True);
+    
 
 # %%
 
 #  C:/Users/Bryce/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc/LocalState/rootfs/home/bryce/gap-4.11.1
-path = r"C:/Users/Bryce/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc/LocalState/rootfs/home/bryce/gap-4.11.1/free_word_mat_noid.csv"
+path = r"C:/Users/Bryce/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc/LocalState/rootfs/home/bryce/gap-4.11.1/Surface_500.csv"
 path2 = r"C:/Users/Bryce/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc/LocalState/rootfs/home/bryce/gap-4.11.1/free_vis_mat_noid.csv" 
 
 
