@@ -24,18 +24,22 @@ This contains files used in reinforcement learning projects.
 
 There are two projects.
 1. Connect 4 bot thats trained via deep Q learning in an incremental/online fashion.
-2. Tic-Tac-Three uses value iteration and minimax to play a variation of tic-tac-toe. \
+2. Tic-Tac-Three uses value iteration to play a variation of tic-tac-toe. \
 
 
 #### Connect 4
 Still a work in progress but the main functionality is there and working. This project will develop a bot to play connect 4 along with a GUI of the game that utilises the bot so I can play against it.
 
+##### Game.py
+Contains the class that simulates the connect 4 game used for the GUI and to train an agent.
 
 ##### train.ipynb
-This contains the class that simulates the game and files to produce and train the bot that plays it.
+Read the game simulation and trains the bot that plays it. The end result model is saved via the 'model' directory.
 
 ##### GUI.py
-IMPORT THE FILE THAT CONTAINS THE GUI FOR THE GAME
+Reads the game simulation and uses it to produce an interactive GUI to play the game. End goal is to have the bot interact with this GUI also.
+
+
 
 #### Tic Tac Three
 This was apart of a group project but all code here is work developed by myself. The files below use value iteration to produce a dictionary of state-value pairs in order to play a variety of tic-tac-toe we imagined and evaluates the gameplay between the two.
