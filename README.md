@@ -24,7 +24,7 @@ This contains files used in reinforcement learning projects.
 
 There are two projects.
 1. Connect 4 bot thats trained via deep Q learning in an incremental/online fashion.
-2. Tic-Tac-Three uses value iteration to play a variation of tic-tac-toe. \
+2. Tic-Tac-Three uses value iteration to play a variation of tic-tac-toe.
 
 
 #### Connect 4
@@ -50,8 +50,8 @@ Building a tic tac toe variety and teaching an agent how to play with value iter
 ##### Generate Matrix Corr plot thing.R
 Expansion on Tic tac Three. Using R to generate some nice plots from the output of gameplay simualtion.
 
-### Individual
-Smaller projects that can each be summarised in a single file.
+### Individual + Leet
+Smaller projects that can each be summarised in a single file, inc my solutions to a handful of daily leet problems.
 
 ##### prime factorisation.py + fizz buzz.py
 Standard coding problems and my approach to solving them
