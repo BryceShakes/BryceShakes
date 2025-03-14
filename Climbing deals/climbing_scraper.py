@@ -4,7 +4,7 @@ import time
 import sys
 import re
 from bs4 import BeautifulSoup as bs
-from IPython.display import display, HTML, clear_output
+from IPython.display import display, HTML
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
