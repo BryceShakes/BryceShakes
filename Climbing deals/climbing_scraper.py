@@ -63,9 +63,9 @@ class scraper:
             url = f'https://bananafingers.co.uk/outlet?p={pg}' # loop through each outlet page
             page = requests.get(url, headers = scraper.headers) # call website
             if page.status_code != 200:
-                page = requests.get(url, headers = headers) # try again
+                page = requests.get(url, headers = scraper.headers) # try again
             if page.status_code != 200:
-                page = requests.get(url, headers = headers) # try again again
+                page = requests.get(url, headers = scraper.headers) # try again again
             if page.status_code != 200:
                 break # give up
             soup = bs(page.text, 'html.parser') # parse html into text
