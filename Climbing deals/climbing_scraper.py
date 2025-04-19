@@ -10,7 +10,6 @@ from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.service import Service as ff_service
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -18,7 +17,6 @@ warnings.filterwarnings("ignore")
 class scraper:
     opts = FirefoxOptions()
     opts.add_argument("--headless")
-    driver_path = ff_service(r"/usr/bin/geckodriver")
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
 
     @staticmethod
@@ -105,8 +103,7 @@ class scraper:
                     'site':[]}
                ):
         
-        browser = webdriver.Firefox(service=scraper.driver_path, options = scraper.opts)
-        
+        browser = webdriver.Firefox(options=scraper.opts)
         browser.get('https://rockrun.com/collections/climbing-mountaineering-deals') # use selenium (via firefox instance) to connect to rockrun
         time.sleep(5)
         
@@ -278,7 +275,7 @@ class scraper:
         return dic
         
     @staticmethod
-    def scrape(display = True):
+    def scrape(display = False):
         dic = scraper.bananafingers()
         dic = scraper.rockrun(dic = dic)
         dic = scraper.climbers_shop(dic = dic)
