@@ -59,32 +59,34 @@ class scraper:
                           'item_link':[],
                           'site':[]}
                      ):
+        for address in ['https://bananafingers.co.uk/outlet?p={}',
+                  'https://bananafingers.co.uk/brand/the_north_face?p={}&product_list_order=qty_ordered&stock=1']:
             
-        for pg in range(1, pages + 1):
-            url = f'https://bananafingers.co.uk/outlet?p={pg}' # loop through each outlet page
-            page = requests.get(url, headers = scraper.headers) # call website
-            if page.status_code != 200:
-                page = requests.get(url, headers = headers) # try again
-            if page.status_code != 200:
-                page = requests.get(url, headers = headers) # try again again
-            if page.status_code != 200:
-                break # give up
-            soup = bs(page.text, 'html.parser') # parse html into text
-            if soup.find('div', class_ ='message info empty'): #stop if the returned html contains an empty warning (ran out of sale items)
-                break
-            all = soup.findAll('li', class_ = 'item product product-item') # find html class for sale items, gather all classes into list
-        
-            for i in all: # each sale item, get relevant info from html
-                if i.find('span').get_text().strip():
-                    pecentage_off = float(i.find('span').get_text().strip().replace('%', ''))
-                    dic['pecentage_off'].append(pecentage_off)
-                    dic['img_link'].append( i.find('img')['src'])
-                    dic['item_name'].append(i.find(class_='product-item-link').get_text().strip())
-                    dic['item_link'].append( i.find(class_='product-item-link')['href'])
-                    price = float(i.find(class_='price').get_text().strip('£'))
-                    dic['price'].append(price)
-                    dic['previous_price'].append(price / (1-(pecentage_off/100)))
-                    dic['site'].append('banana_fingers')
+            for pg in range(1, pages + 1):
+                url = address.format(pg) # loop through each outlet page
+                page = requests.get(url, headers = scraper.headers) # call website
+                if page.status_code != 200:
+                    page = requests.get(url, headers = headers) # try again
+                if page.status_code != 200:
+                    page = requests.get(url, headers = headers) # try again again
+                if page.status_code != 200:
+                    break # give up
+                soup = bs(page.text, 'html.parser') # parse html into text
+                if soup.find('div', class_ ='message info empty'): #stop if the returned html contains an empty warning (ran out of sale items)
+                    break
+                all = soup.findAll('li', class_ = 'item product product-item') # find html class for sale items, gather all classes into list
+            
+                for i in all: # each sale item, get relevant info from html
+                    if i.find('span').get_text().strip():
+                        pecentage_off = float(i.find('span').get_text().strip().replace('%', ''))
+                        dic['pecentage_off'].append(pecentage_off)
+                        dic['img_link'].append( i.find('img')['src'])
+                        dic['item_name'].append(i.find(class_='product-item-link').get_text().strip())
+                        dic['item_link'].append( i.find(class_='product-item-link')['href'])
+                        price = float(i.find(class_='price').get_text().strip('£'))
+                        dic['price'].append(price)
+                        dic['previous_price'].append(price / (1-(pecentage_off/100)))
+                        dic['site'].append('banana_fingers')
 
         if display:
             scraper.display(dic)
