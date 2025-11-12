@@ -235,7 +235,7 @@ class scraper:
         dict = scraper.bananafingers()
         dict = scraper.rockrun(dict = dict)
         dict = scraper.climbers_shop(dict = dict)
-        dict = scraper.gooutdoors(dict = dict)
+        #dict = scraper.gooutdoors(dict = dict) broke and i cba to fix
         
         df = scraper.dict_to_df(dict)
         
