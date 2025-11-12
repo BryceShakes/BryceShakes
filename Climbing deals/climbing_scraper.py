@@ -56,7 +56,8 @@ class scraper:
                           'pecentage_off':[],
                           'previous_price':[],
                           'img_link':[],
-                          'item_link':[]}
+                          'item_link':[],
+                          'site':[],}
                      ):
             
         for pg in range(1, pages + 1):
@@ -76,18 +77,17 @@ class scraper:
                 break
             all = soup.findAll('li', class_ = 'item product product-item') # find html class for sale items, gather all classes into list
         
-            for i in all: # each sale item, get relevant info from html
-                try:
+            for i in all: # each sale item, get relevant info from html 
+                 if i.find('span').get_text().strip():
                     pecentage_off = float(i.find('span').get_text().strip().replace('%', ''))
-                except:
-                    None
-                dict['pecentage_off'].append(pecentage_off)
-                dict['img_link'].append( i.find('img')['src'])
-                dict['item_name'].append(i.find(class_='product-item-link').get_text().strip())
-                dict['item_link'].append( i.find(class_='product-item-link')['href'])
-                price = float(i.find(class_='price').get_text().strip('£'))
-                dict['price'].append(price)
-                dict['previous_price'].append(price / (1-(pecentage_off/100)))
+                    dict['pecentage_off'].append(pecentage_off)
+                    dict['img_link'].append( i.find('img')['src'])
+                    dict['item_name'].append(i.find(class_='product-item-link').get_text().strip())
+                    dict['item_link'].append(i.find(class_='product-item-link')['href'])
+                    price = float(i.find(class_='price').get_text().strip('£'))
+                    dict['price'].append(price)
+                    dict['previous_price'].append(price / (1-(pecentage_off/100)))
+                    dict['site'].append('banana_fingers')
 
         if display:
             scraper.display(dict)
@@ -102,7 +102,8 @@ class scraper:
                     'pecentage_off':[],
                     'previous_price':[],
                     'img_link':[],
-                    'item_link':[]}
+                    'item_link':[],
+                    'site':[],}
                ):
         
         browser = webdriver.Firefox(options=scraper.opts)
@@ -132,6 +133,7 @@ class scraper:
             dict['pecentage_off'].append((1 - (price/previous_price))*100)
             dict['item_link'].append(f"https://rockrun.com{i.find('a')['href']}")
             dict['img_link'].append(f"https://{i.find('img')['src'].strip('/')}")
+            dict['site'].append('rockrun')
         
         if display:
             scraper.display(dict)
@@ -145,7 +147,8 @@ class scraper:
                           'pecentage_off':[],
                           'previous_price':[],
                           'img_link':[],
-                          'item_link':[]}
+                          'item_link':[],
+                          'site':[],}
                      ):
 
         browser = webdriver.Firefox(options=scraper.opts)
@@ -174,6 +177,7 @@ class scraper:
                 dict['pecentage_off'].append(float(i.find('div', class_ = re.compile(r'col-1 pricing$')).find(class_='percentOff-betterSearch').get_text().split(' ')[1].replace('%', '')))
                 dict['item_link'].append(f"https://www.climbers-shop.com{i.find('a', class_ = re.compile(r'col-1 frItemName$'))['href']}")
                 dict['img_link'].append(f"https://www.climbers-shop.com{i.find('img')['data-src']}")
+                dict['site'].append('climbers_shop')
         
         if display:
             scraper.display(dict)
@@ -188,7 +192,8 @@ class scraper:
                        'pecentage_off':[],
                        'previous_price':[],
                        'img_link':[],
-                       'item_link':[]}
+                       'item_link':[],
+                       'site':[],}
                      ):
         browser = webdriver.Firefox(options=scraper.opts)
         pattern = re.compile(r'^product-item')
@@ -216,6 +221,7 @@ class scraper:
                 previous_price = float(i.find(class_='retail-price').get_text().partition('£')[2])
                 dict['previous_price'].append(previous_price)
                 dict['pecentage_off'].append((1 - (price/previous_price))*100)
+                dict['site'].append('gooutdoors')
             time.sleep(5) # gooutdoors doesnt like being called lots :(
         browser.quit()
         
@@ -229,7 +235,7 @@ class scraper:
         dict = scraper.bananafingers()
         dict = scraper.rockrun(dict = dict)
         dict = scraper.climbers_shop(dict = dict)
-        #dict = scraper.gooutdoors(dict = dict) #its broke and i cba to fix it
+        dict = scraper.gooutdoors(dict = dict)
         
         df = scraper.dict_to_df(dict)
         
