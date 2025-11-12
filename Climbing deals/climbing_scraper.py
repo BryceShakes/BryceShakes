@@ -63,18 +63,24 @@ class scraper:
             url = f'https://bananafingers.co.uk/outlet?p={pg}' # loop through each outlet page
             page = requests.get(url, headers = scraper.headers) # call website
             if page.status_code != 200:
-                page = requests.get(url, headers = headers) # try again
+                time.sleep(3)
+                page = requests.get(url, headers = scraper.headers) # try again
             if page.status_code != 200:
-                page = requests.get(url, headers = headers) # try again again
+                time.sleep(3)
+                page = requests.get(url, headers = scraper.headers) # try again again
             if page.status_code != 200:
+                print(f'page {pg} didnt want to work so skipped that bad boy')
                 break # give up
             soup = bs(page.text, 'html.parser') # parse html into text
             if soup.find('div', class_ ='message info empty'): #stop if the returned html contains an empty warning (ran out of sale items)
                 break
             all = soup.findAll('li', class_ = 'item product product-item') # find html class for sale items, gather all classes into list
         
-            for i in all: # each sale item, get relevant info from html 
-                pecentage_off = float(i.find('span').get_text().strip().replace('%', ''))
+            for i in all: # each sale item, get relevant info from html
+                try:
+                    pecentage_off = float(i.find('span').get_text().strip().replace('%', ''))
+                except:
+                    None
                 dict['pecentage_off'].append(pecentage_off)
                 dict['img_link'].append( i.find('img')['src'])
                 dict['item_name'].append(i.find(class_='product-item-link').get_text().strip())
@@ -223,7 +229,7 @@ class scraper:
         dict = scraper.bananafingers()
         dict = scraper.rockrun(dict = dict)
         dict = scraper.climbers_shop(dict = dict)
-        dict = scraper.gooutdoors(dict = dict)
+        #dict = scraper.gooutdoors(dict = dict) #its broke and i cba to fix it
         
         df = scraper.dict_to_df(dict)
         
